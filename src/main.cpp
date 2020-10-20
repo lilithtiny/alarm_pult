@@ -14,7 +14,7 @@ const char *mqtt_pass = ""; // Пароль от сервера
 
 #define BUFFER_SIZE 100
 
-String device = "d1"; // Номер устройства (Должен быть уникальным)
+String device = "pult"; // Номер устройства (Должен быть уникальным)
 String payload;
 
 
@@ -25,21 +25,13 @@ PubSubClient client(wclient, mqtt_server, mqtt_port);
 
 void callback(const MQTT::Publish& pub){
   payload = pub.payload_string();
+  Serial.println(payload);
 
 }
 
 void setup() {
 
   Serial.begin(115200);
-
-}
-
-void tstSignal(){
-
-  client.publish("alarm/d1", "hi");
-  delay(3000);
-  client.publish("alarm/d1", "hi_0");
-  delay(3000);
 
 }
 
@@ -66,6 +58,8 @@ void loop() {
         {
           Serial.println("Connected to MQTT server");
           client.set_callback(callback);
+          client.subscribe("alarm/d1");
+          client.subscribe("alarm/d2");
         }
 
       else { Serial.println("Could not connect to MQTT server");}
@@ -73,7 +67,7 @@ void loop() {
 
     if (client.connected()){client.loop();}
 
-      tstSignal();
+
 
     }
 }// конец основного цикла
